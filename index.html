@@ -22,7 +22,7 @@
       { number: 2, title: "A Cyber's World", available: true },
       { number: 3, title: "Late Night", available: true },
       { number: 4, title: "Prophecy", available: true },
-      { number: 5, title: "--", available: false },
+      { number: 5, title: "Festival Day", available: true },
       { number: 6, title: "--", available: false },
       { number: 7, title: "--", available: false }
     ];
@@ -180,15 +180,20 @@
       if (gameStarted) return;
       
       switch(event.key) {
-        case 'ArrowUp':
+        case "ArrowUp":
+          event.preventDefault();
           navigateUp();
-          break;
-        case 'ArrowDown':
+        break;
+
+        case "ArrowDown":
+          event.preventDefault();
           navigateDown();
-          break;
-        case 'Enter':
+        break;
+
+        case "Enter":
           activateSelected();
-          break;
+        break;
+
       }
     });
 
