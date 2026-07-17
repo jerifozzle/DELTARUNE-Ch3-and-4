@@ -1,12 +1,12 @@
 @font-face {
-  font-family: 'Deltarune';
+  font-family: 'DELTARUNE';
   src: url('font.otf') format('opentype');
 }
 
 body {
   background: #000;
   color: #fff;
-  font-family: 'Deltarune', monospace;
+  font-family: 'DELTARUNE', monospace;
   display: grid;
   place-items: center;
   height: 100vh;
