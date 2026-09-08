@@ -1,18 +1,294 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="style.css">
-  <title>DELTARUNE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <link rel="stylesheet" href="style.css">
+    <title>DELTARUNE</title>
+
+    <style>
+        :root {
+            --ctrl-scale: 1.3;
+        }
+
+        * {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+            *:focus {
+                outline: none;
+                -webkit-focus-ring-color: transparent;
+            }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Mobile controls */
+        #hud-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            pointer-events: none;
+            display: none;
+            transition: opacity 0.2s;
+        }
+
+        .touch-group {
+            position: absolute;
+            pointer-events: auto;
+            touch-action: none;
+            transform: translate(-50%, -50%) scale(var(--ctrl-scale));
+            transform-origin: center;
+            cursor: grab;
+        }
+
+        body.edit-mode .touch-group {
+            border: 2px dashed #00bfff !important;
+            background: rgba(0, 191, 255, 0.2) !important;
+            opacity: 1 !important;
+        }
+
+        #dpad-group {
+            top: 75%;
+            left: 20%;
+            width: 180px;
+            height: 180px;
+        }
+
+        #btn-z {
+            top: 85%;
+            left: 70%;
+        }
+
+        #btn-x {
+            top: 75%;
+            left: 80%;
+        }
+
+        #btn-c {
+            top: 65%;
+            left: 90%;
+        }
+
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.4rem;
+            width: 65px;
+            height: 65px;
+        }
+
+            .btn.active {
+                background: rgba(255, 255, 255, 0.6);
+                border-color: #fff;
+            }
+
+        .dpad-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .dpad-btn {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            pointer-events: none;
+            font-family: Arial, sans-serif;
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        #up {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #down {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #left {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        #right {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        /* Mobile settings */
+        #settings-bar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 1100;
+            display: none;
+            gap: 5px;
+            pointer-events: auto;
+        }
+
+            #settings-bar button {
+                padding: 10px;
+                background: rgba(68, 68, 68, 0.8);
+                color: white;
+                border: 1px solid #777;
+                border-radius: 8px;
+                cursor: pointer;
+                font-family: sans-serif;
+            }
+
+        #settings-panel {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            z-index: 1099;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+            width: 220px;
+            border: 1px solid #444;
+            pointer-events: auto;
+            font-family: sans-serif;
+        }
+
+            #settings-panel input[type="range"] {
+                -webkit-appearance: none !important;
+                appearance: none !important;
+                background: #444 !important;
+                height: 6px;
+                border-radius: 3px;
+                outline: none;
+            }
+
+                #settings-panel input[type="range"]::-webkit-slider-thumb {
+                    -webkit-appearance: none !important;
+                    appearance: none !important;
+                    background: #00bfff !important;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
+
+        /* Chapter iframe */
+        .chapter-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: #000;
+        }
+
+            .chapter-overlay iframe {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+                background: #000;
+            }
+
+        .close-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1200;
+            padding: 10px 14px;
+            background: rgba(0,0,0,0.75);
+            color: white;
+            border: 1px solid #777;
+            border-radius: 8px;
+            cursor: pointer;
+            display: none;
+        }
+
+        body.mobile-controls-active .close-btn {
+            display: none;
+        }
+    </style>
 </head>
+
 <body>
-  <div class="menu" id="menu"></div>
-  
-  <audio id="drone" loop autoplay>
-    <source src="chapter1/mus/audio_drone.ogg" type="audio/ogg">
-    Your browser does not support the audio element.
-  </audio>
-  <script>
+    <div class="menu" id="menu"></div>
+
+    <audio id="drone" loop autoplay>
+        <source src="chapter1/mus/audio_drone.ogg" type="audio/ogg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <!-- Mobile controls -->
+    <div id="hud-layer">
+
+        <div id="dpad-group" class="touch-group draggable" data-save-id="dpad">
+            <div class="dpad-container" id="dpad-touch-zone">
+                <div id="up" class="dpad-btn">▲</div>
+                <div id="down" class="dpad-btn">▼</div>
+                <div id="left" class="dpad-btn">◀</div>
+                <div id="right" class="dpad-btn">▶</div>
+            </div>
+        </div>
+
+        <div id="btn-z" class="touch-group draggable" data-save-id="z-btn">
+            <div class="btn game-btn" data-key="z">Z</div>
+        </div>
+
+        <div id="btn-x" class="touch-group draggable" data-save-id="x-btn">
+            <div class="btn game-btn" data-key="x">X</div>
+        </div>
+
+        <div id="btn-c" class="touch-group draggable" data-save-id="c-btn">
+            <div class="btn game-btn" data-key="c">C</div>
+        </div>
+
+    </div>
+
+    <div id="settings-bar">
+        <button id="settings-toggle">Mobile Settings</button>
+    </div>
+
+    <div id="settings-panel">
+        <div style="margin-bottom:15px">
+            <label>Opacity</label>
+            <input type="range" id="opacity-slider" min="0.05" max="1" step="0.05" style="width:100%">
+        </div>
+
+        <div style="margin-bottom:15px">
+            <label>Size</label>
+            <input type="range" id="size-slider" min="0.5" max="3.0" step="0.1" style="width:100%">
+        </div>
+
+        <button id="reset-pos" style="width:100%; background:#922; color:white; border:none; padding:10px; border-radius:6px;">
+            Reset Layout
+        </button>
+    </div>
+
+    <script>
     // Configuration
     const CHAPTERS = [
       { number: 1, title: "The Beginning", available: true },
@@ -28,29 +304,58 @@
     let gameStarted = false;
     let selectedChapter = null;
 
-  // Audio elements
-  const audio = document.getElementById('drone');
+    // Mobile controls state
+    let useMobileControls = false;
+    let isEditing = false;
+    let activeItem = null;
+
+    const STORAGE_KEY = 'deltarune-v17-stable';
+
+    let config = {
+      opacity: 1,
+      scale: 1.3,
+      positions: {}
+    };
+
+    // Audio elements
+    const audio = document.getElementById('drone');
     const menuMoveAudio = new Audio('audios/snd_menumove.mp3');
     const menuSelectAudio = new Audio('audios/snd_select.mp3');
+
+    // Mobile control elements
+    const hud = document.getElementById('hud-layer');
+
+    // Keyboard mapping
+    const keyMap = {
+      'ArrowUp': 38,
+      'ArrowDown': 40,
+      'ArrowLeft': 37,
+      'ArrowRight': 39,
+      'z': 90,
+      'x': 88,
+      'c': 67
+    };
+
+    const activeKeys = new Set();
 
     // Initialize menu
     function initMenu() {
       const menu = document.getElementById('menu');
-      
+
       CHAPTERS.forEach((chapter, index) => {
         const row = document.createElement('a');
+
         row.className = chapter.available ? 'row' : 'disabled-row';
-        // Keep href inert for in-page loading; store chapter number and availability on dataset
         row.href = '#';
         row.dataset.chapter = chapter.number;
         row.dataset.available = chapter.available ? '1' : '0';
-        
+
         row.innerHTML = `
           <span class="chapter">Chapter ${chapter.number}</span>
           <span class="${chapter.available ? 'title' : 'disabled-title'}">${chapter.title}</span>
           <img src="icons/${chapter.available ? chapter.number : 0}.png">
         `;
-        
+
         menu.appendChild(row);
       });
     }
@@ -60,103 +365,470 @@
       audio.currentTime = 0;
       audio.play().catch(err => {
         console.debug('Audio play failed:', err);
-        // If autoplay was blocked, resume on first user interaction
+
         const resume = () => {
           audio.play().catch(e => console.debug('Audio resume failed:', e));
           window.removeEventListener('click', resume);
           window.removeEventListener('keydown', resume);
         };
+
         window.addEventListener('click', resume, { once: true });
         window.addEventListener('keydown', resume, { once: true });
       });
     }
 
+    // Send keyboard input into chapter iframe
+    function updateKey(key, isDown) {
+      if (isEditing) return;
+
+      const iframe = document.querySelector('#chapter-overlay iframe');
+
+      if (!iframe || !iframe.contentWindow) return;
+
+      if (isDown && !activeKeys.has(key)) {
+        activeKeys.add(key);
+
+        iframe.contentWindow.postMessage({
+          type: 'keydown',
+          key: key,
+          keyCode: keyMap[key]
+        }, '*');
+
+      } else if (!isDown && activeKeys.has(key)) {
+        activeKeys.delete(key);
+
+        iframe.contentWindow.postMessage({
+          type: 'keyup',
+          key: key,
+          keyCode: keyMap[key]
+        }, '*');
+      }
+    }
+
+    // D-pad
+    const dpadZone = document.getElementById('dpad-touch-zone');
+    let isMouseDownOnDpad = false;
+
+    function processDpad(clientX, clientY) {
+      if (isEditing) return;
+
+      const rect = dpadZone.getBoundingClientRect();
+
+      const dx = clientX - (rect.left + rect.width / 2);
+      const dy = clientY - (rect.top + rect.height / 2);
+
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const newKeys = new Set();
+
+      if (dist > 15) {
+        let angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+        if (angle < 0) angle += 360;
+
+        const buffer = 28;
+
+        if (angle > 270 - buffer && angle < 270 + buffer) {
+          newKeys.add('ArrowUp');
+
+        } else if (angle > 90 - buffer && angle < 90 + buffer) {
+          newKeys.add('ArrowDown');
+
+        } else if (angle > 180 - buffer && angle < 180 + buffer) {
+          newKeys.add('ArrowLeft');
+
+        } else if (angle < buffer || angle > 360 - buffer) {
+          newKeys.add('ArrowRight');
+
+        } else {
+          if (dy < 0) newKeys.add('ArrowUp');
+          if (dy > 0) newKeys.add('ArrowDown');
+          if (dx < 0) newKeys.add('ArrowLeft');
+          if (dx > 0) newKeys.add('ArrowRight');
+        }
+      }
+
+      ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].forEach(key => {
+        updateKey(key, newKeys.has(key));
+      });
+    }
+
+    dpadZone.addEventListener('touchstart', e => {
+      e.preventDefault();
+      processDpad(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+
+    dpadZone.addEventListener('touchmove', e => {
+      e.preventDefault();
+      processDpad(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
+
+    dpadZone.addEventListener('touchend', () => {
+      ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].forEach(key => {
+        updateKey(key, false);
+      });
+    });
+
+    dpadZone.addEventListener('mousedown', e => {
+      if (isEditing) return;
+
+      isMouseDownOnDpad = true;
+      processDpad(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('mousemove', e => {
+      if (isMouseDownOnDpad) {
+        processDpad(e.clientX, e.clientY);
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isMouseDownOnDpad) {
+        isMouseDownOnDpad = false;
+
+        ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].forEach(key => {
+          updateKey(key, false);
+        });
+      }
+    });
+
+    // Z / X / C buttons
+    document.querySelectorAll('.game-btn').forEach(btn => {
+      const key = btn.getAttribute('data-key');
+
+      const start = e => {
+        e.preventDefault();
+
+        if (isEditing) return;
+
+        updateKey(key, true);
+        btn.classList.add('active');
+      };
+
+      const end = e => {
+        e.preventDefault();
+
+        updateKey(key, false);
+        btn.classList.remove('active');
+      };
+
+      btn.addEventListener('touchstart', start, { passive: false });
+      btn.addEventListener('touchend', end, { passive: false });
+
+      btn.addEventListener('mousedown', start);
+      btn.addEventListener('mouseup', end);
+      btn.addEventListener('mouseleave', end);
+    });
+
+    // Mobile control toggle
+    function toggleMobileControls() {
+      useMobileControls = !useMobileControls;
+
+      localStorage.setItem(
+        'deltarune-mobile-toggle',
+        useMobileControls ? 'true' : 'false'
+      );
+
+      applyConfig();
+    }
+
+    // Apply mobile settings
+    function applyConfig() {
+      if (useMobileControls && gameStarted) {
+        hud.style.display = 'block';
+        hud.style.opacity = config.opacity;
+
+        document.getElementById('settings-bar').style.display = 'flex';
+      } else {
+        hud.style.display = 'none';
+
+        document.getElementById('settings-bar').style.display = 'none';
+        document.getElementById('settings-panel').style.display = 'none';
+
+        isEditing = false;
+        document.body.classList.remove('edit-mode');
+      }
+
+      document.documentElement.style.setProperty(
+        '--ctrl-scale',
+        config.scale
+      );
+
+      Object.entries(config.positions || {}).forEach(([id, pos]) => {
+        const el = document.querySelector(
+          `[data-save-id="${id}"]`
+        );
+
+        if (el && pos && pos.x && pos.y) {
+          el.style.left = pos.x;
+          el.style.top = pos.y;
+        }
+      });
+    }
+
+    // Mobile layout dragging
+    const startDrag = (el, x, y) => {
+      if (isEditing) {
+        activeItem = el;
+        el.style.cursor = 'grabbing';
+      }
+    };
+
+    const moveDrag = (x, y) => {
+      if (!activeItem || !isEditing) return;
+
+      activeItem.style.left =
+        ((x / window.innerWidth) * 100).toFixed(2) + '%';
+
+      activeItem.style.top =
+        ((y / window.innerHeight) * 100).toFixed(2) + '%';
+    };
+
+    document.querySelectorAll('.draggable').forEach(el => {
+      el.onmousedown = e => {
+        startDrag(el, e.clientX, e.clientY);
+      };
+
+      el.ontouchstart = e => {
+        if (isEditing) {
+          e.preventDefault();
+
+          startDrag(
+            el,
+            e.touches[0].clientX,
+            e.touches[0].clientY
+          );
+        }
+      };
+    });
+
+    window.addEventListener('mousemove', e => {
+      moveDrag(e.clientX, e.clientY);
+    });
+
+    window.addEventListener('touchmove', e => {
+      if (activeItem && isEditing) {
+        e.preventDefault();
+
+        moveDrag(
+          e.touches[0].clientX,
+          e.touches[0].clientY
+        );
+      }
+    }, { passive: false });
+
+    function finishDrag() {
+      if (activeItem) {
+        activeItem.style.cursor = 'grab';
+      }
+
+      activeItem = null;
+    }
+
+    window.addEventListener('mouseup', finishDrag);
+    window.addEventListener('touchend', finishDrag);
+
+    // Settings panel
+    document.getElementById('settings-toggle').onclick = () => {
+      const panel = document.getElementById('settings-panel');
+
+      if (panel.style.display === 'block') {
+        panel.style.display = 'none';
+
+        isEditing = false;
+        document.body.classList.remove('edit-mode');
+
+        if (!config.positions) {
+          config.positions = {};
+        }
+
+        document.querySelectorAll('.draggable').forEach(el => {
+          config.positions[
+            el.getAttribute('data-save-id')
+          ] = {
+            x: el.style.left,
+            y: el.style.top
+          };
+        });
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(config)
+        );
+
+      } else {
+        panel.style.display = 'block';
+
+        isEditing = true;
+        document.body.classList.add('edit-mode');
+      }
+
+      applyConfig();
+    };
+
+    document.getElementById('opacity-slider').oninput = e => {
+      config.opacity = e.target.value;
+      applyConfig();
+    };
+
+    document.getElementById('size-slider').oninput = e => {
+      config.scale = e.target.value;
+      applyConfig();
+    };
+
+    document.getElementById('reset-pos').onclick = () => {
+      config = {
+        opacity: 1,
+        scale: 1.3,
+        positions: {}
+      };
+
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(config)
+      );
+
+      document.getElementById('opacity-slider').value = 1;
+      document.getElementById('size-slider').value = 1.3;
+
+      document.querySelectorAll('.draggable').forEach(el => {
+        el.style.left = '';
+        el.style.top = '';
+      });
+
+      applyConfig();
+    };
+
     // Chapter loading — load chapter in an in-page iframe overlay
     function loadChapter(chapter) {
       if (!chapter) return;
+
       const chapterNum = String(chapter);
-      // If chapter is not available, notify
-      const chapObj = CHAPTERS.find(c => String(c.number) === chapterNum);
+
+      const chapObj = CHAPTERS.find(
+        c => String(c.number) === chapterNum
+      );
+
       if (!chapObj || !chapObj.available) {
         alert(`Chapter ${chapterNum} coming soon!`);
         return;
       }
 
-      // Prevent multiple loads
       if (gameStarted) return;
+
       gameStarted = true;
 
-      // Mute background drone while in-game
       audio.muted = true;
 
-      // Create overlay
       const overlay = document.createElement('div');
       overlay.className = 'chapter-overlay';
       overlay.id = 'chapter-overlay';
 
       const iframe = document.createElement('iframe');
+
       iframe.src = `chapter${chapterNum}/index.html`;
+
       iframe.setAttribute('allow', 'fullscreen');
-      iframe.setAttribute('sandbox', 'allow-forms allow-scripts allow-same-origin allow-modals allow-popups');
+
+      iframe.setAttribute(
+        'sandbox',
+        'allow-forms allow-scripts allow-same-origin allow-modals allow-popups'
+      );
 
       const closeBtn = document.createElement('button');
+
       closeBtn.className = 'close-btn';
       closeBtn.textContent = 'Close (Esc)';
-      closeBtn.addEventListener('click', () => closeChapter());
+
+      closeBtn.addEventListener('click', () => {
+        closeChapter();
+      });
 
       overlay.appendChild(closeBtn);
       overlay.appendChild(iframe);
+
       document.body.appendChild(overlay);
 
-      // Focus the iframe so it receives input
-      iframe.focus();
+      // Wait for iframe to load before enabling controls
+      iframe.addEventListener('load', () => {
+        iframe.focus();
+        applyConfig();
+      });
 
-      // Allow Escape key to close the overlay
+      applyConfig();
+
+      // Escape key
       const escHandler = (e) => {
         if (e.key === 'Escape') {
           closeChapter();
         }
       };
+
       window.addEventListener('keydown', escHandler);
 
-      // Close function removes overlay and restores menu/audio state
       function closeChapter() {
         const ov = document.getElementById('chapter-overlay');
+
         if (ov) ov.remove();
+
+        activeKeys.clear();
+
         gameStarted = false;
+
         audio.muted = false;
+
         restartAudio();
-        window.removeEventListener('keydown', escHandler);
+
+        window.removeEventListener(
+          'keydown',
+          escHandler
+        );
+
+        applyConfig();
       }
     }
 
     // Navigation
     function selectChapter(index) {
       const rows = document.querySelectorAll('.row');
+
       if (selectedChapter !== null) {
         rows[selectedChapter].classList.remove("selected");
       }
+
       selectedChapter = index;
+
       rows[selectedChapter].classList.add("selected");
-      menuMoveAudio.play();
+
+      menuMoveAudio.currentTime = 0;
+      menuMoveAudio.play().catch(() => {});
     }
 
     function navigateUp() {
       const rows = document.querySelectorAll('.row');
+
       if (selectedChapter === null) {
         selectChapter(0);
       } else {
-        const newIndex = selectedChapter === 0 ? rows.length - 1 : selectedChapter - 1;
+        const newIndex =
+          selectedChapter === 0
+            ? rows.length - 1
+            : selectedChapter - 1;
+
         selectChapter(newIndex);
       }
     }
 
     function navigateDown() {
       const rows = document.querySelectorAll('.row');
+
       if (selectedChapter === null) {
         selectChapter(0);
       } else {
-        const newIndex = selectedChapter === rows.length - 1 ? 0 : selectedChapter + 1;
+        const newIndex =
+          selectedChapter === rows.length - 1
+            ? 0
+            : selectedChapter + 1;
+
         selectChapter(newIndex);
       }
     }
@@ -165,9 +837,14 @@
       if (selectedChapter !== null) {
         const rows = document.querySelectorAll('.row');
         const row = rows[selectedChapter];
+
         if (!row) return;
-        menuSelectAudio.play();
+
+        menuSelectAudio.currentTime = 0;
+        menuSelectAudio.play().catch(() => {});
+
         const chap = row.dataset.chapter;
+
         loadChapter(chap);
       }
     }
@@ -175,7 +852,7 @@
     // Event listeners
     document.addEventListener('keydown', (event) => {
       if (gameStarted) return;
-      
+
       switch(event.key) {
         case "ArrowUp":
           event.preventDefault();
@@ -191,27 +868,41 @@
           activateSelected();
         break;
 
+        case "m":
+        case "M":
+          toggleMobileControls();
+        break;
       }
     });
 
     // Mouse interactions
     function setupMouseEvents() {
       document.querySelectorAll('.row').forEach((row, index) => {
+
         row.addEventListener('mouseenter', () => {
           if (!gameStarted) {
-            menuMoveAudio.play();
+            menuMoveAudio.currentTime = 0;
+            menuMoveAudio.play().catch(() => {});
+
             if (selectedChapter !== null) {
-              document.querySelectorAll('.row')[selectedChapter].classList.remove("selected");
+              document.querySelectorAll('.row')[
+                selectedChapter
+              ].classList.remove("selected");
             }
+
             selectChapter(index);
           }
         });
-        
+
         row.addEventListener('click', (e) => {
           e.preventDefault();
+
           if (!gameStarted) {
-            menuSelectAudio.play();
+            menuSelectAudio.currentTime = 0;
+            menuSelectAudio.play().catch(() => {});
+
             const chap = row.dataset.chapter;
+
             if (row.dataset.available === '1') {
               loadChapter(chap);
             } else {
@@ -229,30 +920,91 @@
       }
     });
 
-    // Handle when returning from a chapter (page load)
+    // Handle when returning from a chapter
     window.addEventListener('pageshow', (event) => {
-      if (event.persisted || performance.navigation.type === 2) {
-        // Page was restored from cache (back button)
+      if (
+        event.persisted ||
+        performance.navigation.type === 2
+      ) {
         gameStarted = false;
-        // Unmute background audio when returning to menu and try to restart it
+
         audio.muted = false;
+
         restartAudio();
       }
     });
 
+    // Load mobile settings
+    function loadMobileSettings() {
+      const savedToggle =
+        localStorage.getItem(
+          'deltarune-mobile-toggle'
+        );
+
+      if (savedToggle === 'true') {
+        useMobileControls = true;
+      }
+
+      const saved =
+        localStorage.getItem(STORAGE_KEY);
+
+      if (saved) {
+        try {
+          config = JSON.parse(saved);
+        } catch(e) {
+          console.debug(
+            'Could not load mobile settings:',
+            e
+          );
+        }
+      }
+
+      if (!config) {
+        config = {};
+      }
+
+      if (config.opacity === undefined) {
+        config.opacity = 1;
+      }
+
+      if (config.scale === undefined) {
+        config.scale = 1.3;
+      }
+
+      if (!config.positions) {
+        config.positions = {};
+      }
+
+      document.getElementById(
+        'opacity-slider'
+      ).value = config.opacity;
+
+      document.getElementById(
+        'size-slider'
+      ).value = config.scale;
+
+      applyConfig();
+    }
+
     // Analytics
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
+
+    function gtag(){
+      dataLayer.push(arguments);
+    }
+
     gtag('js', new Date());
     gtag('config', 'G-WLTG1S4STB');
 
-  // Initialize
-  initMenu();
-  setupMouseEvents();
-    
-  // Try to play audio on load
-  restartAudio();
-  </script>
-  <script src="savesync.js"></script>
+    // Initialize
+    initMenu();
+    setupMouseEvents();
+    loadMobileSettings();
+
+    // Try to play audio on load
+    restartAudio();
+    </script>
+
+    <script src="savesync.js"></script>
 </body>
 </html>
