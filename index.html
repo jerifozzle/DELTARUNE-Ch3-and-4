@@ -29,7 +29,7 @@
         }
 
         /* =========================
-        MOBILE CONTROLS
+           MOBILE CONTROLS
         ========================= */
 
         #hud-layer {
@@ -112,7 +112,7 @@
             width: 55px;
             height: 55px;
             background: rgba(255, 255, 255, 0.15);
-            border: 2px solid rgba(255,255,255,0.3);
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
             display: flex;
             align-items: center;
@@ -150,7 +150,7 @@
         }
 
         /* =========================
-        MOBILE SETTINGS
+           MOBILE SETTINGS
         ========================= */
 
         #settings-bar {
@@ -178,7 +178,7 @@
             top: 70px;
             right: 10px;
             z-index: 149;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0, 0, 0, 0.95);
             color: white;
             padding: 20px;
             border-radius: 12px;
@@ -220,7 +220,7 @@
                 }
 
         /* =========================
-        LOADER
+           LOADER
         ========================= */
 
         #loader-screen {
@@ -236,7 +236,7 @@
         }
 
         /* =========================
-        SYSTEM MENU
+           SYSTEM MENU
         ========================= */
 
         #system-menu {
@@ -256,7 +256,7 @@
         }
 
         /* =========================
-        CHAPTER OVERLAY
+           CHAPTER OVERLAY
         ========================= */
 
         .chapter-overlay {
@@ -284,7 +284,7 @@
             left: 10px;
             z-index: 60;
             padding: 9px 12px;
-            background: rgba(0,0,0,0.7);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
             border: 1px solid #777;
             border-radius: 8px;
@@ -312,7 +312,7 @@
 
     <!-- =========================
          LOADER
-         ========================= -->
+    ========================= -->
 
     <div id="loader-screen">
         <p>Launching...</p>
@@ -320,7 +320,7 @@
 
     <!-- =========================
          MOBILE HUD
-         ========================= -->
+    ========================= -->
 
     <div id="hud-layer">
 
@@ -349,7 +349,7 @@
 
     <!-- =========================
          MOBILE SETTINGS
-         ========================= -->
+    ========================= -->
 
     <div id="settings-bar">
         <button id="settings-toggle">Mobile Settings</button>
@@ -386,7 +386,7 @@
 
     <!-- =========================
          SAVE IMPORT
-         ========================= -->
+    ========================= -->
 
     <input type="file"
            id="importFile"
@@ -509,14 +509,15 @@
                     chapter.available ? '1' : '0';
 
                 row.innerHTML = `
-                  <span class="chapter">Chapter ${chapter.number}</span>
-                  <span class="${chapter.available ? 'title' : 'disabled-title'}">${chapter.title}</span>
-                  <img src="icons/${chapter.available ? chapter.number : 0}.png">
-                `;
+                        <span class="chapter">Chapter ${chapter.number}</span>
+                        <span class="${chapter.available ? 'title' : 'disabled-title'}">${chapter.title}</span>
+                        <img src="icons/${chapter.available ? chapter.number : 0}.png">
+                    `;
 
                 menu.appendChild(row);
             });
 
+            // SYSTEM MENU BUTTON
             const systemRow =
                 document.createElement('a');
 
@@ -525,10 +526,10 @@
             systemRow.dataset.system = 'menu';
 
             systemRow.innerHTML = `
-                <span class="chapter">SYSTEM</span>
-                <span class="title">Go</span>
-                <span style="margin-left:auto;">></span>
-              `;
+                    <span class="chapter">SYSTEM</span>
+                    <span class="title">Go</span>
+                    <span style="margin-left:auto;">></span>
+                `;
 
             menu.appendChild(systemRow);
 
@@ -537,6 +538,38 @@
 
                 if (!gameStarted) {
                     openSystemMenu();
+                }
+            });
+
+            /*
+             * SYSTEM SUBMENU
+             *
+             * The Close option is intentionally added FIRST
+             * so it is at the top of the submenu.
+             */
+
+            // Close system menu
+            const closeRow =
+                document.createElement('a');
+
+            closeRow.className =
+                'row system-close';
+
+            closeRow.href = '#';
+            closeRow.dataset.system = 'close';
+
+            closeRow.innerHTML = `
+                    <span class="chapter">&lt;</span>
+                    <span class="title">Back</span>
+                `;
+
+            systemMenu.appendChild(closeRow);
+
+            closeRow.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                if (!gameStarted) {
+                    closeSystemMenu();
                 }
             });
 
@@ -549,11 +582,11 @@
             mobileRow.dataset.system = 'mobile';
 
             mobileRow.innerHTML = `
-                <span class="chapter">SYSTEM</span>
-                <span class="title" id="mobile-controls-status-text">
-                  Mobile controls: OFF
-                </span>
-              `;
+                    <span class="chapter">SYSTEM</span>
+                    <span class="title" id="mobile-controls-status-text">
+                        Mobile controls: OFF
+                    </span>
+                `;
 
             systemMenu.appendChild(mobileRow);
 
@@ -574,9 +607,9 @@
             exportRow.dataset.system = 'export';
 
             exportRow.innerHTML = `
-                <span class="chapter">SAVE DATA</span>
-                <span class="title">Export Save (.zip)</span>
-              `;
+                    <span class="chapter">SAVE DATA</span>
+                    <span class="title">Export Save (.zip)</span>
+                `;
 
             systemMenu.appendChild(exportRow);
 
@@ -597,9 +630,9 @@
             importRow.dataset.system = 'import';
 
             importRow.innerHTML = `
-                <span class="chapter">SAVE DATA</span>
-                <span class="title">Import Save (.zip)</span>
-              `;
+                    <span class="chapter">SAVE DATA</span>
+                    <span class="title">Import Save (.zip)</span>
+                `;
 
             systemMenu.appendChild(importRow);
 
@@ -610,31 +643,6 @@
                     document
                         .getElementById('importFile')
                         .click();
-                }
-            });
-
-            // Close system menu
-            const closeRow =
-                document.createElement('a');
-
-            closeRow.className =
-                'row system-close';
-
-            closeRow.href = '#';
-            closeRow.dataset.system = 'close';
-
-            closeRow.innerHTML = `
-                <span class="chapter">&lt;</span>
-                <span class="title">Close</span>
-              `;
-
-            systemMenu.appendChild(closeRow);
-
-            closeRow.addEventListener('click', (e) => {
-                e.preventDefault();
-
-                if (!gameStarted) {
-                    closeSystemMenu();
                 }
             });
 
@@ -662,6 +670,7 @@
                     row.classList.remove('selected')
                 );
 
+            // Back is now the first option.
             selectSystemRow(0);
         }
 
@@ -702,6 +711,7 @@
             selectedChapter = index;
 
             if (rows[selectedChapter]) {
+
                 rows[selectedChapter]
                     .classList.add('selected');
 
@@ -777,25 +787,17 @@
 
             playSelect();
 
-            if (
-                row.dataset.system === 'mobile'
-            ) {
-
+            if (row.dataset.system === 'mobile') {
                 toggleMobileHardware();
                 return;
             }
 
-            if (
-                row.dataset.system === 'export'
-            ) {
-
+            if (row.dataset.system === 'export') {
                 exportSave();
                 return;
             }
 
-            if (
-                row.dataset.system === 'import'
-            ) {
+            if (row.dataset.system === 'import') {
 
                 document
                     .getElementById('importFile')
@@ -804,10 +806,7 @@
                 return;
             }
 
-            if (
-                row.dataset.system === 'close'
-            ) {
-
+            if (row.dataset.system === 'close') {
                 closeSystemMenu();
                 return;
             }
@@ -832,7 +831,6 @@
             );
 
             updateMobileStatus();
-
             applyConfig();
         }
 
@@ -974,7 +972,6 @@
             playSelect();
 
             const zip = new JSZip();
-
             let hasData = false;
 
             try {
@@ -1292,58 +1289,42 @@
                     angle < 270 + buffer
                 ) {
 
-                    newKeys.add(
-                        'ArrowUp'
-                    );
+                    newKeys.add('ArrowUp');
 
                 } else if (
                     angle > 90 - buffer &&
                     angle < 90 + buffer
                 ) {
 
-                    newKeys.add(
-                        'ArrowDown'
-                    );
+                    newKeys.add('ArrowDown');
 
                 } else if (
                     angle > 180 - buffer &&
                     angle < 180 + buffer
                 ) {
 
-                    newKeys.add(
-                        'ArrowLeft'
-                    );
+                    newKeys.add('ArrowLeft');
 
                 } else if (
                     angle < buffer ||
                     angle > 360 - buffer
                 ) {
 
-                    newKeys.add(
-                        'ArrowRight'
-                    );
+                    newKeys.add('ArrowRight');
 
                 } else {
 
                     if (dy < 0)
-                        newKeys.add(
-                            'ArrowUp'
-                        );
+                        newKeys.add('ArrowUp');
 
                     if (dy > 0)
-                        newKeys.add(
-                            'ArrowDown'
-                        );
+                        newKeys.add('ArrowDown');
 
                     if (dx < 0)
-                        newKeys.add(
-                            'ArrowLeft'
-                        );
+                        newKeys.add('ArrowLeft');
 
                     if (dx > 0)
-                        newKeys.add(
-                            'ArrowRight'
-                        );
+                        newKeys.add('ArrowRight');
                 }
             }
 
@@ -1423,9 +1404,7 @@
             'mousemove',
             e => {
 
-                if (
-                    isMouseDownOnDpad
-                ) {
+                if (isMouseDownOnDpad) {
 
                     processDpad(
                         e.clientX,
@@ -1439,9 +1418,7 @@
             'mouseup',
             () => {
 
-                if (
-                    isMouseDownOnDpad
-                ) {
+                if (isMouseDownOnDpad) {
 
                     isMouseDownOnDpad = false;
 
@@ -2135,8 +2112,7 @@
             } else {
 
                 const newIndex =
-                    selectedChapter ===
-                        rows.length - 1
+                    selectedChapter === rows.length - 1
                         ? 0
                         : selectedChapter + 1;
 
@@ -2190,6 +2166,9 @@
                 if (gameStarted)
                     return;
 
+                /*
+                 * Z, z, and Enter all confirm.
+                 */
                 if (
                     event.key === 'z' ||
                     event.key === 'Z' ||
