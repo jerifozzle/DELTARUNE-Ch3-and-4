@@ -220,26 +220,6 @@
                 }
 
         /* =========================
-        SYSTEM MENU
-        ========================= */
-
-        #system-menu {
-            display: none;
-        }
-
-            #system-menu.open {
-                display: block;
-            }
-
-        .menu-section {
-            width: 100%;
-        }
-
-        .system-back {
-            cursor: pointer;
-        }
-
-        /* =========================
         LOADER
         ========================= */
 
@@ -253,6 +233,26 @@
             align-items: center;
             z-index: 200;
             font-family: sans-serif;
+        }
+
+        /* =========================
+        SYSTEM MENU
+        ========================= */
+
+        #system-menu {
+            display: none;
+        }
+
+        body.system-page #menu {
+            display: none;
+        }
+
+        body.system-page #system-menu {
+            display: block;
+        }
+
+        .system-close {
+            margin-top: 20px;
         }
 
         /* =========================
@@ -301,46 +301,9 @@
 
 <body>
 
-    <div class="menu" id="menu">
+    <div class="menu" id="menu"></div>
 
-        <div id="chapters-menu" class="menu-section">
-
-            <div class="row menu-heading">
-                <span class="chapter">CHAPTERS</span>
-            </div>
-
-        </div>
-
-        <div id="system-menu" class="menu-section">
-
-            <div class="row system-back" id="system-back">
-                <span class="chapter">&lt; BACK</span>
-                <span class="title">Chapters</span>
-            </div>
-
-            <div class="row">
-                <span class="chapter">SYSTEM</span>
-                <span class="title">Mobile Controls</span>
-                <span class="title" id="mobile-controls-status-text" style="margin-left:auto;">
-                    OFF
-                </span>
-            </div>
-
-            <div class="row">
-                <span class="chapter">SAVE DATA</span>
-                <span class="title">Export Save (.zip)</span>
-                <span style="margin-left:auto;">⬆</span>
-            </div>
-
-            <div class="row">
-                <span class="chapter">SAVE DATA</span>
-                <span class="title">Import Save (.zip)</span>
-                <span style="margin-left:auto;">⬇</span>
-            </div>
-
-        </div>
-
-    </div>
+    <div class="menu" id="system-menu"></div>
 
     <audio id="drone" loop autoplay>
         <source src="chapter1/mus/audio_drone.ogg" type="audio/ogg">
@@ -452,7 +415,7 @@
 
         let gameStarted = false;
         let selectedChapter = null;
-        let systemMenuOpen = false;
+        let currentMenu = 'chapters';
 
         let useMobileControls = false;
         let isEditing = false;
@@ -521,15 +484,16 @@
 
         function initMenu() {
 
-            const chaptersMenu =
-                document.getElementById('chapters-menu');
+            const menu =
+                document.getElementById('menu');
 
             const systemMenu =
                 document.getElementById('system-menu');
 
             CHAPTERS.forEach((chapter) => {
 
-                const row = document.createElement('a');
+                const row =
+                    document.createElement('a');
 
                 row.className =
                     chapter.available
@@ -545,12 +509,12 @@
                     chapter.available ? '1' : '0';
 
                 row.innerHTML = `
-                        <span class="chapter">Chapter ${chapter.number}</span>
-                        <span class="${chapter.available ? 'title' : 'disabled-title'}">${chapter.title}</span>
-                        <img src="icons/${chapter.available ? chapter.number : 0}.png">
-                    `;
+                  <span class="chapter">Chapter ${chapter.number}</span>
+                  <span class="${chapter.available ? 'title' : 'disabled-title'}">${chapter.title}</span>
+                  <img src="icons/${chapter.available ? chapter.number : 0}.png">
+                `;
 
-                chaptersMenu.appendChild(row);
+                menu.appendChild(row);
             });
 
             const systemRow =
@@ -558,18 +522,17 @@
 
             systemRow.className = 'row';
             systemRow.href = '#';
-            systemRow.dataset.system = 'open';
+            systemRow.dataset.system = 'menu';
 
             systemRow.innerHTML = `
-                    <span class="chapter">SYSTEM</span>
-                    <span class="title">System</span>
-                    <span style="margin-left:auto;">&gt;</span>
-                `;
+                <span class="chapter">SYSTEM</span>
+                <span class="title">System</span>
+                <span style="margin-left:auto;">></span>
+              `;
 
-            chaptersMenu.appendChild(systemRow);
+            menu.appendChild(systemRow);
 
             systemRow.addEventListener('click', (e) => {
-
                 e.preventDefault();
 
                 if (!gameStarted) {
@@ -577,15 +540,24 @@
                 }
             });
 
-            const systemRows =
-                systemMenu.querySelectorAll('.row');
+            // Mobile controls option
+            const mobileRow =
+                document.createElement('a');
 
-            const mobileRow = systemRows[1];
-
+            mobileRow.className = 'row';
+            mobileRow.href = '#';
             mobileRow.dataset.system = 'mobile';
 
-            mobileRow.addEventListener('click', (e) => {
+            mobileRow.innerHTML = `
+                <span class="chapter">SYSTEM</span>
+                <span class="title" id="mobile-controls-status-text">
+                  Mobile controls: OFF
+                </span>
+              `;
 
+            systemMenu.appendChild(mobileRow);
+
+            mobileRow.addEventListener('click', (e) => {
                 e.preventDefault();
 
                 if (!gameStarted) {
@@ -593,12 +565,22 @@
                 }
             });
 
-            const exportRow = systemRows[2];
+            // Export save option
+            const exportRow =
+                document.createElement('a');
 
+            exportRow.className = 'row';
+            exportRow.href = '#';
             exportRow.dataset.system = 'export';
 
-            exportRow.addEventListener('click', (e) => {
+            exportRow.innerHTML = `
+                <span class="chapter">SAVE DATA</span>
+                <span class="title">Export Save (.zip)</span>
+              `;
 
+            systemMenu.appendChild(exportRow);
+
+            exportRow.addEventListener('click', (e) => {
                 e.preventDefault();
 
                 if (!gameStarted) {
@@ -606,12 +588,22 @@
                 }
             });
 
-            const importRow = systemRows[3];
+            // Import save option
+            const importRow =
+                document.createElement('a');
 
+            importRow.className = 'row';
+            importRow.href = '#';
             importRow.dataset.system = 'import';
 
-            importRow.addEventListener('click', (e) => {
+            importRow.innerHTML = `
+                <span class="chapter">SAVE DATA</span>
+                <span class="title">Import Save (.zip)</span>
+              `;
 
+            systemMenu.appendChild(importRow);
+
+            importRow.addEventListener('click', (e) => {
                 e.preventDefault();
 
                 if (!gameStarted) {
@@ -621,14 +613,30 @@
                 }
             });
 
-            document
-                .getElementById('system-back')
-                .addEventListener('click', (e) => {
+            // Close system menu
+            const closeRow =
+                document.createElement('a');
 
-                    e.preventDefault();
+            closeRow.className =
+                'row system-close';
 
+            closeRow.href = '#';
+            closeRow.dataset.system = 'close';
+
+            closeRow.innerHTML = `
+                <span class="chapter">&lt;</span>
+                <span class="title">Close</span>
+              `;
+
+            systemMenu.appendChild(closeRow);
+
+            closeRow.addEventListener('click', (e) => {
+                e.preventDefault();
+
+                if (!gameStarted) {
                     closeSystemMenu();
-                });
+                }
+            });
 
             updateMobileStatus();
         }
@@ -641,32 +649,168 @@
 
             playSelect();
 
-            systemMenuOpen = true;
+            currentMenu = 'system';
             selectedChapter = null;
 
-            document
-                .getElementById('chapters-menu')
-                .style.display = 'none';
+            document.body.classList.add(
+                'system-page'
+            );
 
             document
-                .getElementById('system-menu')
-                .classList.add('open');
+                .querySelectorAll('.row')
+                .forEach(row =>
+                    row.classList.remove('selected')
+                );
+
+            selectSystemRow(0);
         }
 
         function closeSystemMenu() {
 
             playSelect();
 
-            systemMenuOpen = false;
+            currentMenu = 'chapters';
             selectedChapter = null;
 
-            document
-                .getElementById('system-menu')
-                .classList.remove('open');
+            document.body.classList.remove(
+                'system-page'
+            );
 
             document
-                .getElementById('chapters-menu')
-                .style.display = '';
+                .querySelectorAll('.row')
+                .forEach(row =>
+                    row.classList.remove('selected')
+                );
+
+            selectChapter(0);
+        }
+
+        function selectSystemRow(index) {
+
+            const rows =
+                document.querySelectorAll(
+                    '#system-menu .row'
+                );
+
+            if (rows.length === 0)
+                return;
+
+            rows.forEach(row =>
+                row.classList.remove('selected')
+            );
+
+            selectedChapter = index;
+
+            if (rows[selectedChapter]) {
+                rows[selectedChapter]
+                    .classList.add('selected');
+
+                playMove();
+            }
+        }
+
+        function navigateSystemUp() {
+
+            const rows =
+                document.querySelectorAll(
+                    '#system-menu .row'
+                );
+
+            if (rows.length === 0)
+                return;
+
+            if (selectedChapter === null) {
+
+                selectSystemRow(0);
+
+            } else {
+
+                const newIndex =
+                    selectedChapter === 0
+                        ? rows.length - 1
+                        : selectedChapter - 1;
+
+                selectSystemRow(newIndex);
+            }
+        }
+
+        function navigateSystemDown() {
+
+            const rows =
+                document.querySelectorAll(
+                    '#system-menu .row'
+                );
+
+            if (rows.length === 0)
+                return;
+
+            if (selectedChapter === null) {
+
+                selectSystemRow(0);
+
+            } else {
+
+                const newIndex =
+                    selectedChapter === rows.length - 1
+                        ? 0
+                        : selectedChapter + 1;
+
+                selectSystemRow(newIndex);
+            }
+        }
+
+        function activateSystemSelected() {
+
+            if (selectedChapter === null)
+                return;
+
+            const rows =
+                document.querySelectorAll(
+                    '#system-menu .row'
+                );
+
+            const row =
+                rows[selectedChapter];
+
+            if (!row)
+                return;
+
+            playSelect();
+
+            if (
+                row.dataset.system === 'mobile'
+            ) {
+
+                toggleMobileHardware();
+                return;
+            }
+
+            if (
+                row.dataset.system === 'export'
+            ) {
+
+                exportSave();
+                return;
+            }
+
+            if (
+                row.dataset.system === 'import'
+            ) {
+
+                document
+                    .getElementById('importFile')
+                    .click();
+
+                return;
+            }
+
+            if (
+                row.dataset.system === 'close'
+            ) {
+
+                closeSystemMenu();
+                return;
+            }
         }
 
         // =========================
@@ -701,7 +845,8 @@
 
             if (status) {
                 status.textContent =
-                    useMobileControls ? "ON" : "OFF";
+                    "Mobile controls: " +
+                    (useMobileControls ? "ON" : "OFF");
             }
         }
 
@@ -1908,29 +2053,14 @@
         // MENU NAVIGATION
         // =========================
 
-        function getMenuRows() {
-
-            if (systemMenuOpen) {
-
-                return document
-                    .querySelectorAll(
-                        '#system-menu .row'
-                    );
-
-            }
-
-            return document
-                .querySelectorAll(
-                    '#chapters-menu .row'
-                );
-        }
-
         function selectChapter(
             index
         ) {
 
             const rows =
-                getMenuRows();
+                document.querySelectorAll(
+                    '#menu .row'
+                );
 
             if (
                 selectedChapter !== null &&
@@ -1960,7 +2090,9 @@
         function navigateUp() {
 
             const rows =
-                getMenuRows();
+                document.querySelectorAll(
+                    '#menu .row'
+                );
 
             if (rows.length === 0)
                 return;
@@ -1987,7 +2119,9 @@
         function navigateDown() {
 
             const rows =
-                getMenuRows();
+                document.querySelectorAll(
+                    '#menu .row'
+                );
 
             if (rows.length === 0)
                 return;
@@ -2019,7 +2153,9 @@
             ) return;
 
             const rows =
-                getMenuRows();
+                document.querySelectorAll(
+                    '#menu .row'
+                );
 
             const row =
                 rows[selectedChapter];
@@ -2030,51 +2166,10 @@
 
             if (
                 row.dataset.system ===
-                'open'
+                'menu'
             ) {
 
                 openSystemMenu();
-                return;
-            }
-
-            if (
-                row.dataset.system ===
-                'mobile'
-            ) {
-
-                toggleMobileHardware();
-                return;
-            }
-
-            if (
-                row.dataset.system ===
-                'export'
-            ) {
-
-                exportSave();
-                return;
-            }
-
-            if (
-                row.dataset.system ===
-                'import'
-            ) {
-
-                document
-                    .getElementById(
-                        'importFile'
-                    )
-                    .click();
-
-                return;
-            }
-
-            if (
-                row.id ===
-                'system-back'
-            ) {
-
-                closeSystemMenu();
                 return;
             }
 
@@ -2095,13 +2190,44 @@
                 if (gameStarted)
                     return;
 
+                if (
+                    event.key === 'z' ||
+                    event.key === 'Z' ||
+                    event.key === 'Enter'
+                ) {
+
+                    event.preventDefault();
+
+                    if (
+                        currentMenu === 'system'
+                    ) {
+
+                        activateSystemSelected();
+
+                    } else {
+
+                        activateSelected();
+                    }
+
+                    return;
+                }
+
                 switch (event.key) {
 
                     case "ArrowUp":
 
                         event.preventDefault();
 
-                        navigateUp();
+                        if (
+                            currentMenu === 'system'
+                        ) {
+
+                            navigateSystemUp();
+
+                        } else {
+
+                            navigateUp();
+                        }
 
                         break;
 
@@ -2109,15 +2235,16 @@
 
                         event.preventDefault();
 
-                        navigateDown();
+                        if (
+                            currentMenu === 'system'
+                        ) {
 
-                        break;
+                            navigateSystemDown();
 
-                    case "Enter":
+                        } else {
 
-                        event.preventDefault();
-
-                        activateSelected();
+                            navigateDown();
+                        }
 
                         break;
 
@@ -2125,7 +2252,10 @@
 
                         event.preventDefault();
 
-                        if (systemMenuOpen) {
+                        if (
+                            currentMenu === 'system'
+                        ) {
+
                             closeSystemMenu();
                         }
 
@@ -2142,10 +2272,10 @@
 
             document
                 .querySelectorAll(
-                    '#chapters-menu .row, #system-menu .row'
+                    '#menu .row'
                 )
                 .forEach(
-                    (row) => {
+                    (row, index) => {
 
                         row.addEventListener(
                             'mouseenter',
@@ -2153,16 +2283,9 @@
 
                                 if (!gameStarted) {
 
-                                    const rows =
-                                        getMenuRows();
-
-                                    const index =
-                                        Array.from(rows)
-                                            .indexOf(row);
-
-                                    if (index !== -1) {
-                                        selectChapter(index);
-                                    }
+                                    selectChapter(
+                                        index
+                                    );
                                 }
                             }
                         );
@@ -2176,57 +2299,17 @@
                                 if (gameStarted)
                                     return;
 
+                                playSelect();
+
                                 if (
                                     row.dataset.system ===
-                                    'open'
+                                    'menu'
                                 ) {
 
                                     openSystemMenu();
-                                    return;
-                                }
-
-                                if (
-                                    row.dataset.system ===
-                                    'mobile'
-                                ) {
-
-                                    toggleMobileHardware();
-                                    return;
-                                }
-
-                                if (
-                                    row.dataset.system ===
-                                    'export'
-                                ) {
-
-                                    exportSave();
-                                    return;
-                                }
-
-                                if (
-                                    row.dataset.system ===
-                                    'import'
-                                ) {
-
-                                    document
-                                        .getElementById(
-                                            'importFile'
-                                        )
-                                        .click();
 
                                     return;
                                 }
-
-                                if (
-                                    row.id ===
-                                    'system-back'
-                                ) {
-
-                                    closeSystemMenu();
-                                    return;
-                                }
-
-                                playSelect();
 
                                 const chap =
                                     row.dataset.chapter;
@@ -2245,6 +2328,85 @@
                                     alert(
                                         `Chapter ${chap} coming soon!`
                                     );
+                                }
+                            }
+                        );
+                    }
+                );
+
+            document
+                .querySelectorAll(
+                    '#system-menu .row'
+                )
+                .forEach(
+                    (row, index) => {
+
+                        row.addEventListener(
+                            'mouseenter',
+                            () => {
+
+                                if (!gameStarted) {
+
+                                    selectSystemRow(
+                                        index
+                                    );
+                                }
+                            }
+                        );
+
+                        row.addEventListener(
+                            'click',
+                            (e) => {
+
+                                e.preventDefault();
+
+                                if (gameStarted)
+                                    return;
+
+                                playSelect();
+
+                                if (
+                                    row.dataset.system ===
+                                    'mobile'
+                                ) {
+
+                                    toggleMobileHardware();
+
+                                    return;
+                                }
+
+                                if (
+                                    row.dataset.system ===
+                                    'export'
+                                ) {
+
+                                    exportSave();
+
+                                    return;
+                                }
+
+                                if (
+                                    row.dataset.system ===
+                                    'import'
+                                ) {
+
+                                    document
+                                        .getElementById(
+                                            'importFile'
+                                        )
+                                        .click();
+
+                                    return;
+                                }
+
+                                if (
+                                    row.dataset.system ===
+                                    'close'
+                                ) {
+
+                                    closeSystemMenu();
+
+                                    return;
                                 }
                             }
                         );
