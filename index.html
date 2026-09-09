@@ -8,280 +8,339 @@
     <title>DELTARUNE</title>
 
     <style>
-           :root {
-               --ctrl-scale: 1.3;
-           }
+        :root {
+            --ctrl-scale: 1.3;
+        }
 
-           * {
-               -webkit-appearance: none;
-               -webkit-tap-highlight-color: transparent;
-               -webkit-text-size-adjust: none;
-               -webkit-font-smoothing: antialiased;
-           }
+        * {
+            -webkit-appearance: none;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: none;
+            -webkit-font-smoothing: antialiased;
+        }
 
-               *:focus {
-                   outline: none;
-                   -webkit-focus-ring-color: transparent;
-               }
+            *:focus {
+                outline: none;
+                -webkit-focus-ring-color: transparent;
+            }
 
-           ::-webkit-scrollbar {
-               display: none;
-           }
+        ::-webkit-scrollbar {
+            display: none;
+        }
 
-           /* =========================
+        /* =========================
         MOBILE CONTROLS
         ========================= */
 
-           #hud-layer {
-               position: fixed;
-               inset: 0;
-               z-index: 100;
-               pointer-events: none;
-               transition: opacity 0.2s;
-               display: none;
-           }
+        #hud-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            display: none;
+        }
 
-           .touch-group {
-               position: absolute;
-               pointer-events: auto;
-               touch-action: none;
-               transform: translate(-50%, -50%) scale(var(--ctrl-scale));
-               transform-origin: center;
-               cursor: grab;
-               user-select: none;
-               -webkit-user-select: none;
-           }
+        .touch-group {
+            position: absolute;
+            pointer-events: auto;
+            touch-action: none;
+            transform: translate(-50%, -50%) scale(var(--ctrl-scale));
+            transform-origin: center;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+        }
 
-           body.edit-mode .touch-group {
-               border: 2px dashed #00bfff !important;
-               background: rgba(0, 191, 255, 0.2) !important;
-               opacity: 1 !important;
-           }
+        body.edit-mode .touch-group {
+            border: 2px dashed #00bfff !important;
+            background: rgba(0, 191, 255, 0.2) !important;
+            opacity: 1 !important;
+        }
 
-           #dpad-group {
-               top: 75%;
-               left: 20%;
-               width: 180px;
-               height: 180px;
-           }
+        #dpad-group {
+            top: 75%;
+            left: 20%;
+            width: 180px;
+            height: 180px;
+        }
 
-           #btn-z {
-               top: 85%;
-               left: 70%;
-           }
+        #btn-z {
+            top: 85%;
+            left: 70%;
+        }
 
-           #btn-x {
-               top: 75%;
-               left: 80%;
-           }
+        #btn-x {
+            top: 75%;
+            left: 80%;
+        }
 
-           #btn-c {
-               top: 65%;
-               left: 90%;
-           }
+        #btn-c {
+            top: 65%;
+            left: 90%;
+        }
 
-           .btn {
-               background: rgba(255, 255, 255, 0.2);
-               color: white;
-               border: 2px solid rgba(255, 255, 255, 0.4);
-               border-radius: 50%;
-               display: flex;
-               justify-content: center;
-               align-items: center;
-               font-weight: bold;
-               font-size: 1.4rem;
-               width: 65px;
-               height: 65px;
-               box-sizing: border-box;
-           }
+        .btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 1.4rem;
+            width: 65px;
+            height: 65px;
+            box-sizing: border-box;
+        }
 
-               .btn.active {
-                   background: rgba(255, 255, 255, 0.6);
-                   border-color: #fff;
-               }
+            .btn.active {
+                background: rgba(255, 255, 255, 0.6);
+                border-color: #fff;
+            }
 
-           .dpad-container {
-               position: relative;
-               width: 100%;
-               height: 100%;
-               cursor: pointer;
-           }
+        .dpad-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
 
-           .dpad-btn {
-               position: absolute;
-               width: 55px;
-               height: 55px;
-               background: rgba(255, 255, 255, 0.15);
-               border: 2px solid rgba(255,255,255,0.3);
-               border-radius: 8px;
-               display: flex;
-               align-items: center;
-               justify-content: center;
-               color: white;
-               pointer-events: none;
-               font-family: "Arial", sans-serif;
-               font-size: 22px;
-               line-height: 1;
-               box-sizing: border-box;
-           }
+        .dpad-btn {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            pointer-events: none;
+            font-family: "Arial", sans-serif;
+            font-size: 22px;
+            line-height: 1;
+            box-sizing: border-box;
+        }
 
-           #up {
-               top: 0;
-               left: 50%;
-               transform: translateX(-50%);
-           }
+        #up {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
-           #down {
-               bottom: 0;
-               left: 50%;
-               transform: translateX(-50%);
-           }
+        #down {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
 
-           #left {
-               left: 0;
-               top: 50%;
-               transform: translateY(-50%);
-           }
+        #left {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
-           #right {
-               right: 0;
-               top: 50%;
-               transform: translateY(-50%);
-           }
+        #right {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
 
-           /* =========================
+        /* =========================
         MOBILE SETTINGS
         ========================= */
 
-           #settings-bar {
-               position: fixed;
-               top: 10px;
-               right: 10px;
-               z-index: 150;
-               display: none;
-               gap: 5px;
-               pointer-events: auto;
-           }
+        #settings-bar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 150;
+            display: none;
+            gap: 5px;
+            pointer-events: auto;
+        }
 
-               #settings-bar button {
-                   padding: 10px;
-                   background: rgba(68, 68, 68, 0.8);
-                   color: white;
-                   border: 1px solid #777;
-                   border-radius: 8px;
-                   cursor: pointer;
-                   font-family: sans-serif;
-               }
+            #settings-bar button {
+                padding: 10px;
+                background: rgba(68, 68, 68, 0.8);
+                color: white;
+                border: 1px solid #777;
+                border-radius: 8px;
+                cursor: pointer;
+                font-family: sans-serif;
+            }
 
-           #settings-panel {
-               position: fixed;
-               top: 70px;
-               right: 10px;
-               z-index: 149;
-               background: rgba(0,0,0,0.95);
-               color: white;
-               padding: 20px;
-               border-radius: 12px;
-               display: none;
-               width: 220px;
-               border: 1px solid #444;
-               pointer-events: auto;
-               font-family: sans-serif;
-               box-sizing: border-box;
-           }
+        #settings-panel {
+            position: fixed;
+            top: 70px;
+            right: 10px;
+            z-index: 149;
+            background: rgba(0,0,0,0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+            width: 220px;
+            border: 1px solid #444;
+            pointer-events: auto;
+            font-family: sans-serif;
+            box-sizing: border-box;
+        }
 
-               #settings-panel input[type="range"] {
-                   -webkit-appearance: none !important;
-                   appearance: none !important;
-                   background: #444 !important;
-                   height: 6px;
-                   border-radius: 3px;
-                   outline: none;
-                   width: 100%;
-               }
+            #settings-panel input[type="range"] {
+                -webkit-appearance: none !important;
+                appearance: none !important;
+                background: #444 !important;
+                height: 6px;
+                border-radius: 3px;
+                outline: none;
+                width: 100%;
+            }
 
-                   #settings-panel input[type="range"]::-webkit-slider-thumb {
-                       -webkit-appearance: none !important;
-                       appearance: none !important;
-                       background: #00bfff !important;
-                       width: 16px;
-                       height: 16px;
-                       border-radius: 50%;
-                       cursor: pointer;
-                   }
+                #settings-panel input[type="range"]::-webkit-slider-thumb {
+                    -webkit-appearance: none !important;
+                    appearance: none !important;
+                    background: #00bfff !important;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
 
-                   #settings-panel input[type="range"]::-moz-range-thumb {
-                       background: #00bfff !important;
-                       width: 16px;
-                       height: 16px;
-                       border-radius: 50%;
-                       cursor: pointer;
-                       border: none;
-                   }
+                #settings-panel input[type="range"]::-moz-range-thumb {
+                    background: #00bfff !important;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    border: none;
+                }
 
-           /* =========================
+        /* =========================
+        SYSTEM MENU
+        ========================= */
+
+        #system-menu {
+            display: none;
+        }
+
+            #system-menu.open {
+                display: block;
+            }
+
+        .menu-section {
+            width: 100%;
+        }
+
+        .system-back {
+            cursor: pointer;
+        }
+
+        /* =========================
         LOADER
         ========================= */
 
-           #loader-screen {
-               position: fixed;
-               inset: 0;
-               background: #111;
-               color: white;
-               display: none;
-               justify-content: center;
-               align-items: center;
-               z-index: 200;
-               font-family: sans-serif;
-           }
+        #loader-screen {
+            position: fixed;
+            inset: 0;
+            background: #111;
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+            font-family: sans-serif;
+        }
 
-           /* =========================
+        /* =========================
         CHAPTER OVERLAY
         ========================= */
 
-           .chapter-overlay {
-               position: fixed;
-               inset: 0;
-               width: 100vw;
-               height: 100vh;
-               background: #000;
-               z-index: 50;
-               overflow: hidden;
-           }
+        .chapter-overlay {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 50;
+            overflow: hidden;
+        }
 
-               .chapter-overlay iframe {
-                   position: absolute;
-                   inset: 0;
-                   width: 100%;
-                   height: 100%;
-                   border: none;
-                   background: #000;
-               }
+            .chapter-overlay iframe {
+                position: absolute;
+                inset: 0;
+                width: 100%;
+                height: 100%;
+                border: none;
+                background: #000;
+            }
 
-           .close-btn {
-               position: fixed;
-               top: 10px;
-               left: 10px;
-               z-index: 60;
-               padding: 9px 12px;
-               background: rgba(0,0,0,0.7);
-               color: white;
-               border: 1px solid #777;
-               border-radius: 8px;
-               font-family: sans-serif;
-               cursor: pointer;
-               opacity: 0.7;
-           }
+        .close-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 60;
+            padding: 9px 12px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: 1px solid #777;
+            border-radius: 8px;
+            font-family: sans-serif;
+            cursor: pointer;
+            opacity: 0.7;
+        }
 
-               .close-btn:hover {
-                   opacity: 1;
-               }
+            .close-btn:hover {
+                opacity: 1;
+            }
     </style>
 </head>
 
 <body>
 
-    <div class="menu" id="menu"></div>
+    <div class="menu" id="menu">
+
+        <div id="chapters-menu" class="menu-section">
+
+            <div class="row menu-heading">
+                <span class="chapter">CHAPTERS</span>
+            </div>
+
+        </div>
+
+        <div id="system-menu" class="menu-section">
+
+            <div class="row system-back" id="system-back">
+                <span class="chapter">&lt; BACK</span>
+                <span class="title">Chapters</span>
+            </div>
+
+            <div class="row">
+                <span class="chapter">SYSTEM</span>
+                <span class="title">Mobile Controls</span>
+                <span class="title" id="mobile-controls-status-text" style="margin-left:auto;">
+                    OFF
+                </span>
+            </div>
+
+            <div class="row">
+                <span class="chapter">SAVE DATA</span>
+                <span class="title">Export Save (.zip)</span>
+                <span style="margin-left:auto;">⬆</span>
+            </div>
+
+            <div class="row">
+                <span class="chapter">SAVE DATA</span>
+                <span class="title">Import Save (.zip)</span>
+                <span style="margin-left:auto;">⬇</span>
+            </div>
+
+        </div>
+
+    </div>
 
     <audio id="drone" loop autoplay>
         <source src="chapter1/mus/audio_drone.ogg" type="audio/ogg">
@@ -393,6 +452,7 @@
 
         let gameStarted = false;
         let selectedChapter = null;
+        let systemMenuOpen = false;
 
         let useMobileControls = false;
         let isEditing = false;
@@ -461,7 +521,11 @@
 
         function initMenu() {
 
-            const menu = document.getElementById('menu');
+            const chaptersMenu =
+                document.getElementById('chapters-menu');
+
+            const systemMenu =
+                document.getElementById('system-menu');
 
             CHAPTERS.forEach((chapter) => {
 
@@ -481,33 +545,47 @@
                     chapter.available ? '1' : '0';
 
                 row.innerHTML = `
-              <span class="chapter">Chapter ${chapter.number}</span>
-              <span class="${chapter.available ? 'title' : 'disabled-title'}">${chapter.title}</span>
-              <img src="icons/${chapter.available ? chapter.number : 0}.png">
-            `;
+                        <span class="chapter">Chapter ${chapter.number}</span>
+                        <span class="${chapter.available ? 'title' : 'disabled-title'}">${chapter.title}</span>
+                        <img src="icons/${chapter.available ? chapter.number : 0}.png">
+                    `;
 
-                menu.appendChild(row);
+                chaptersMenu.appendChild(row);
             });
 
-            // Mobile controls option
-            const mobileRow =
+            const systemRow =
                 document.createElement('a');
 
-            mobileRow.className = 'row';
-            mobileRow.href = '#';
+            systemRow.className = 'row';
+            systemRow.href = '#';
+            systemRow.dataset.system = 'open';
+
+            systemRow.innerHTML = `
+                    <span class="chapter">SYSTEM</span>
+                    <span class="title">System</span>
+                    <span style="margin-left:auto;">&gt;</span>
+                `;
+
+            chaptersMenu.appendChild(systemRow);
+
+            systemRow.addEventListener('click', (e) => {
+
+                e.preventDefault();
+
+                if (!gameStarted) {
+                    openSystemMenu();
+                }
+            });
+
+            const systemRows =
+                systemMenu.querySelectorAll('.row');
+
+            const mobileRow = systemRows[1];
+
             mobileRow.dataset.system = 'mobile';
 
-            mobileRow.innerHTML = `
-            <span class="chapter">SYSTEM</span>
-            <span class="title" id="mobile-controls-status-text">
-              Mobile controls: OFF
-            </span>
-            <span style="margin-left:auto;">📱</span>
-          `;
-
-            menu.appendChild(mobileRow);
-
             mobileRow.addEventListener('click', (e) => {
+
                 e.preventDefault();
 
                 if (!gameStarted) {
@@ -515,23 +593,12 @@
                 }
             });
 
-            // Export save option
-            const exportRow =
-                document.createElement('a');
+            const exportRow = systemRows[2];
 
-            exportRow.className = 'row';
-            exportRow.href = '#';
             exportRow.dataset.system = 'export';
 
-            exportRow.innerHTML = `
-            <span class="chapter">SAVE DATA</span>
-            <span class="title">Export Save (.zip)</span>
-            <span style="margin-left:auto;">⬆</span>
-          `;
-
-            menu.appendChild(exportRow);
-
             exportRow.addEventListener('click', (e) => {
+
                 e.preventDefault();
 
                 if (!gameStarted) {
@@ -539,23 +606,12 @@
                 }
             });
 
-            // Import save option
-            const importRow =
-                document.createElement('a');
+            const importRow = systemRows[3];
 
-            importRow.className = 'row';
-            importRow.href = '#';
             importRow.dataset.system = 'import';
 
-            importRow.innerHTML = `
-            <span class="chapter">SAVE DATA</span>
-            <span class="title">Import Save (.zip)</span>
-            <span style="margin-left:auto;">⬇</span>
-          `;
-
-            menu.appendChild(importRow);
-
             importRow.addEventListener('click', (e) => {
+
                 e.preventDefault();
 
                 if (!gameStarted) {
@@ -565,7 +621,52 @@
                 }
             });
 
+            document
+                .getElementById('system-back')
+                .addEventListener('click', (e) => {
+
+                    e.preventDefault();
+
+                    closeSystemMenu();
+                });
+
             updateMobileStatus();
+        }
+
+        // =========================
+        // SYSTEM MENU
+        // =========================
+
+        function openSystemMenu() {
+
+            playSelect();
+
+            systemMenuOpen = true;
+            selectedChapter = null;
+
+            document
+                .getElementById('chapters-menu')
+                .style.display = 'none';
+
+            document
+                .getElementById('system-menu')
+                .classList.add('open');
+        }
+
+        function closeSystemMenu() {
+
+            playSelect();
+
+            systemMenuOpen = false;
+            selectedChapter = null;
+
+            document
+                .getElementById('system-menu')
+                .classList.remove('open');
+
+            document
+                .getElementById('chapters-menu')
+                .style.display = '';
         }
 
         // =========================
@@ -600,8 +701,7 @@
 
             if (status) {
                 status.textContent =
-                    "Mobile controls: " +
-                    (useMobileControls ? "ON" : "OFF");
+                    useMobileControls ? "ON" : "OFF";
             }
         }
 
@@ -1743,7 +1843,6 @@
 
             function closeChapter() {
 
-                // Release any keys currently held
                 [
                     'ArrowUp',
                     'ArrowDown',
@@ -1782,7 +1881,6 @@
                 applyConfig();
             }
 
-            // Escape closes chapter
             const escHandler =
                 (e) => {
 
@@ -1810,14 +1908,29 @@
         // MENU NAVIGATION
         // =========================
 
+        function getMenuRows() {
+
+            if (systemMenuOpen) {
+
+                return document
+                    .querySelectorAll(
+                        '#system-menu .row'
+                    );
+
+            }
+
+            return document
+                .querySelectorAll(
+                    '#chapters-menu .row'
+                );
+        }
+
         function selectChapter(
             index
         ) {
 
             const rows =
-                document.querySelectorAll(
-                    '.row'
-                );
+                getMenuRows();
 
             if (
                 selectedChapter !== null &&
@@ -1847,9 +1960,7 @@
         function navigateUp() {
 
             const rows =
-                document.querySelectorAll(
-                    '.row'
-                );
+                getMenuRows();
 
             if (rows.length === 0)
                 return;
@@ -1876,9 +1987,7 @@
         function navigateDown() {
 
             const rows =
-                document.querySelectorAll(
-                    '.row'
-                );
+                getMenuRows();
 
             if (rows.length === 0)
                 return;
@@ -1910,9 +2019,7 @@
             ) return;
 
             const rows =
-                document.querySelectorAll(
-                    '.row'
-                );
+                getMenuRows();
 
             const row =
                 rows[selectedChapter];
@@ -1921,7 +2028,15 @@
 
             playSelect();
 
-            // System items
+            if (
+                row.dataset.system ===
+                'open'
+            ) {
+
+                openSystemMenu();
+                return;
+            }
+
             if (
                 row.dataset.system ===
                 'mobile'
@@ -1951,6 +2066,15 @@
                     )
                     .click();
 
+                return;
+            }
+
+            if (
+                row.id ===
+                'system-back'
+            ) {
+
+                closeSystemMenu();
                 return;
             }
 
@@ -1996,6 +2120,16 @@
                         activateSelected();
 
                         break;
+
+                    case "Escape":
+
+                        event.preventDefault();
+
+                        if (systemMenuOpen) {
+                            closeSystemMenu();
+                        }
+
+                        break;
                 }
             }
         );
@@ -2008,10 +2142,10 @@
 
             document
                 .querySelectorAll(
-                    '.row'
+                    '#chapters-menu .row, #system-menu .row'
                 )
                 .forEach(
-                    (row, index) => {
+                    (row) => {
 
                         row.addEventListener(
                             'mouseenter',
@@ -2019,9 +2153,16 @@
 
                                 if (!gameStarted) {
 
-                                    selectChapter(
-                                        index
-                                    );
+                                    const rows =
+                                        getMenuRows();
+
+                                    const index =
+                                        Array.from(rows)
+                                            .indexOf(row);
+
+                                    if (index !== -1) {
+                                        selectChapter(index);
+                                    }
                                 }
                             }
                         );
@@ -2035,16 +2176,21 @@
                                 if (gameStarted)
                                     return;
 
-                                playSelect();
+                                if (
+                                    row.dataset.system ===
+                                    'open'
+                                ) {
 
-                                // System row
+                                    openSystemMenu();
+                                    return;
+                                }
+
                                 if (
                                     row.dataset.system ===
                                     'mobile'
                                 ) {
 
                                     toggleMobileHardware();
-
                                     return;
                                 }
 
@@ -2054,7 +2200,6 @@
                                 ) {
 
                                     exportSave();
-
                                     return;
                                 }
 
@@ -2071,6 +2216,17 @@
 
                                     return;
                                 }
+
+                                if (
+                                    row.id ===
+                                    'system-back'
+                                ) {
+
+                                    closeSystemMenu();
+                                    return;
+                                }
+
+                                playSelect();
 
                                 const chap =
                                     row.dataset.chapter;
@@ -2142,7 +2298,6 @@
             'load',
             () => {
 
-                // Mobile toggle
                 const savedToggle =
                     localStorage.getItem(
                         'deltarune-mobile-toggle'
@@ -2156,7 +2311,6 @@
                         true;
                 }
 
-                // Control configuration
                 const saved =
                     localStorage.getItem(
                         STORAGE_KEY
